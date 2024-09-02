@@ -9,44 +9,13 @@ import { HomePageFilters } from '@/constants/filter'
 import { Description } from '@radix-ui/react-dialog'
 import Link from 'next/link'
 import React from 'react'
-const Home = () => {
-  const questions = [
-  {
-    id: '1',
-    title: 'Redux Toolkit Not Updating State as Expected',
-    tags: [
-      { _id: '1', name: 'React.JS' },
-      { _id: '2', name: 'Redux' }
-    ],
-    author: [
-      {
-        _id: '1',
-        name: 'John Doe',
-        picture: 'https://randomuser.me/api/portraits/men/1.jpg'
-      }
-    ],
-    upvotes: 10,
-    views: 100,
-    answers: [], // You can add answer objects here as needed
-    createdAt: new Date('2024-09-01T12:00:00Z')
-  },
-  {
-    id: '2',
-    title: 'Async/Await Function Not Handling Errors Properly',
-    tags: [{ _id: '3', name: 'JavaScript' }],
-    author: [
-      {
-        _id: '2',
-        name: 'Sujata',
-        picture: 'https://randomuser.me/api/portraits/women/2.jpg'
-      }
-    ],
-    upvotes: 15,
-    views: 10,
-    answers: [], // You can add answer objects here as needed
-    createdAt: new Date('2024-06-16T12:00:00Z')
-  }
-];
+import {getQuestions} from '@/lib/actions/question.action'
+
+
+
+const Home = async() => {
+  
+  const result = await getQuestions({});
 
   return (
     <>
@@ -79,8 +48,8 @@ const Home = () => {
       <HomeFilters />
 
       <div className='mt-10 flex w-full flex-col gap-6'>
-        {questions.length > 0 ?
-          questions.map((question) => (
+        {result.questions.length > 0 ?
+          result.questions.map((question) => (
             <QuestionCard
               key={question.id}
               id={question.id}
