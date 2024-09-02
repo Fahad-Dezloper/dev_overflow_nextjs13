@@ -149,7 +149,8 @@ async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
                   <FormControl className="mt-3.5">
                  <Editor
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
-                    onInit={(_evt, editor) => {
+                  onInit={(_evt, editor) => {
+                      // @ts-ignore
                       editorRef.current = editor;
                     }}
                     onBlur={field.onBlur}
