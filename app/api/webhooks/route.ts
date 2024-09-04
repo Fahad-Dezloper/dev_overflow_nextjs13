@@ -1,9 +1,8 @@
+/* eslint-disable camelcase */
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
-import { createUser } from '@/lib/actions/user.action'
-import { updateUser } from '@/lib/actions/user.action'
-import { deleteUser } from '@/lib/actions/user.action'
+import { createUser , updateUser , deleteUser } from '@/lib/actions/user.action'
 import { NextResponse } from 'next/server'
 
 

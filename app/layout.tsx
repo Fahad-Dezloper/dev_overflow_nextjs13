@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
   ClerkProvider,
   SignInButton,
@@ -8,6 +9,7 @@ import {
 import './globals.css'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import type { Metadata } from 'next'
+import React from 'react'
 import { ThemeProvider } from '@/context/ThemeProvider'
 
 const inter = Inter(
