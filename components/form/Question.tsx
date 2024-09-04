@@ -1,10 +1,10 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRef, useState } from 'react';
+import { useRef, useState , React } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { useForm } from "react-hook-form"
-import { infer, z } from "zod"
+import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -133,7 +133,7 @@ async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
                       <Input className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-light300_dark700 min-h-[56px] border" {...field} />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Be specific and imagine you're asking a question to another person.
+                Be specific and imagine you&apos;re asking a question to another person.
               </FormDescription>
               <FormMessage className="text-red-500"/>
             </FormItem>
