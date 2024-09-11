@@ -21,6 +21,7 @@ import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
 import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "@/context/ThemeProvider";
 
 const type:any = 'create'
 
@@ -29,7 +30,7 @@ interface Props {
 }
 
 const Question = ({ mongoUserId }: Props) => {
-  
+  const {mode} = useTheme()
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter();
@@ -67,7 +68,7 @@ const Question = ({ mongoUserId }: Props) => {
 // copy code
 
 async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
-    console.log("Form submitted with values:", values); // Check if this logs correctly
+    // console.log("Form submitted with values:", values); // Check if this logs correctly
 
     setIsSubmitting(true);
 
@@ -167,8 +168,11 @@ async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
                       toolbar: 'undo redo | blocks | ' +
                         'codesample | bold italic forecolor | alignleft aligncenter ' +
                         'alignright alignjustify | bullist numlist',
-                      content_style: 'body { font-family:Inter; font-size:16px }'
-                    }}
+                      content_style: 'body { font-family:Inter; font-size:16px }',
+                      skin: mode === 'dark' ? 'oxide-dark' : 'oxide',
+                      content_css: mode === 'dark' ? 'dark' : 'light'
+                  }}
+                  
                   />
 
               </FormControl>
