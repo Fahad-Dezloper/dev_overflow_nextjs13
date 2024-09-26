@@ -3,11 +3,17 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // This POST function handles the API request and returns a response
 export const POST = async (request: Request) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is not defined in environment variables");
+    }
+
   try {
     const { question } = await request.json();
 
     // Initialize Google Generative AI with the API key
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const genAI = new GoogleGenerativeAI(apiKey);
 
     // Select the Gemini model, here using "gemini-1.5-flash"
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
