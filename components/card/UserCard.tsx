@@ -6,7 +6,7 @@ import RenderTags from '../shared/RenderTags'
 
 interface Props {
     user: {
-        _id: string;
+        _id: number;
         clerkId: string;
         picture: string;
         name: string;
