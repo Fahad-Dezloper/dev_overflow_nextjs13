@@ -64,21 +64,21 @@ const Page = async ({ params, searchParams }: any) => {
             alt="clock icon"
             value={` asked ${getTimestamp(result.createdAt)}`}
             title=" Asked"
-            textStyles="small-medium text-dark400_light800"
+            textStyle="small-medium text-dark400_light800"
           />
           <Metric 
             imgUrl="/assets/icons/message.svg"
             alt="message"
             value={formatAndDivideNumber(result.answers.length)}
             title=" Answers"
-            textStyles="small-medium text-dark400_light800"
+            textStyle="small-medium text-dark400_light800"
           />
           <Metric 
             imgUrl="/assets/icons/eye.svg"
             alt="eye"
             value={formatAndDivideNumber(result.views)}
             title=" Views"
-            textStyles="small-medium text-dark400_light800"
+            textStyle="small-medium text-dark400_light800"
           />
       </div>
 
