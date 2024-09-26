@@ -11,7 +11,7 @@ interface QuestionProps {
   _id: string;
   title: string;
   tags: {
-    _id: string;
+    _id: number;
     name: string;
   }[];
   author: {
