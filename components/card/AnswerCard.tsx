@@ -60,7 +60,7 @@ const AnswerCard = ({
           value={author.name}
           title={` • asked ${getTimestamp(createdAt)}`}
           href={`/profile/${author.clerkId}`}
-          textStyles="body-medium text-dark400_light700"
+          textStyle="body-medium text-dark400_light700"
           isAuthor
         />
 
@@ -70,7 +70,7 @@ const AnswerCard = ({
             alt="like icon"
             value={formatAndDivideNumber(upvotes)}
             title=" Votes"
-            textStyles="small-medium text-dark400_light800"
+            textStyle="small-medium text-dark400_light800"
           />
         </div>
       </div>
