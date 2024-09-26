@@ -71,11 +71,12 @@ export async function deleteUser(params: DeleteUserParams) {
         // Delete user from database
         // and questions, answers, comments, etc.
 
-        // get user question ids
+      // get user question ids
+      // @ts-ignore
         const userQuestionIds = await Question.find({ author: user._id }).distinct('_id');
-
+        // @ts-ignore
         await Question.deleteMany({ author: user._id });
-
+// @ts-ignore
         const deletedUser = await User.findByIdAndDelete(user._id);
 
         return deletedUser;
