@@ -48,7 +48,7 @@ const QuestionCard = ({ clerkId, _id, title, tags, author, upvotes, views, answe
 
       <div className='mt-3.5 flex flex-wrap gap-2'>
         {tags.map((tag) => (
-          <RenderTags key={tag._id} _id={tag._id} name={tag.name} />
+          <RenderTags key={tag._id} _id={String(tag._id)} name={tag.name} />
         ))}
       </div>
 
