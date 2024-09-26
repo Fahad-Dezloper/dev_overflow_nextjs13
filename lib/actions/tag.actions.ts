@@ -6,7 +6,6 @@ import { GetAllTagsParams, GetQuestionsByTagIdParams, GetTopInteractedTagsParams
 import Tag, { ITag } from '@/database/tag.model'
 import { FilterQuery } from "mongoose";
 import Question from "@/database/question.model";
-import { length } from "assert";
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     try {
         connectToDatabase();
