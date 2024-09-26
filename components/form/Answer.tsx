@@ -26,6 +26,7 @@ interface Props {
 const Answer = ({ question, questionId, authorId }: Props) => {
   const pathname = usePathname();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingAI, setIsSubmittingAI] = useState(false);
   const { mode } = useTheme();
   const editorRef = useRef(null);
   const form = useForm<z.infer<typeof AnswerSchema>>({
@@ -61,6 +62,39 @@ const Answer = ({ question, questionId, authorId }: Props) => {
     }
   };
 
+ const generateAiAnswer = async () => {  // Fixed the function definition
+  if (!authorId) return;
+  
+  setIsSubmittingAI(true);
+
+  try {
+    // Sending a POST request to your server-side API endpoint which handles Gemini API requests
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ question }) // Sends the 'question' as the prompt
+    });
+
+    // Ensure the response is properly parsed
+    const aiAnswer = await response.json(); // Invoking .json() as a function to parse the response
+
+    const formattedAnswer = aiAnswer.reply.replace(/\n/g, '<br />');
+
+    if (editorRef.current) {
+      const editor = editorRef.current as any;
+      editor.setContent(formattedAnswer)
+    }
+  } catch (error) {
+    console.log("Error:", error);  // Logging any errors that occur
+  } finally {
+    // Reset the submission state
+    setIsSubmittingAI(false);
+  }
+};
+
+
   return (
     <div>
       <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
@@ -70,8 +104,14 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
-          onClick={() => {}}
+          onClick={() => generateAiAnswer()}
         >
+          {isSubmittingAI ? (
+            <>
+              Generating...
+            </>
+          ) : (
+            <>
           <Image
             src="/assets/icons/stars.svg"
             alt="star"
@@ -79,8 +119,10 @@ const Answer = ({ question, questionId, authorId }: Props) => {
             height={12}
             className="object-contain"
           />
-          Generate an AI Answer
-        </Button>
+          Generate AI Answer
+          </>  
+          )}
+          </Button>
       </div>
 
       <Form {...form}>

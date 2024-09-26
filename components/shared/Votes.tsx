@@ -1,7 +1,7 @@
 "use client"
 
 import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
-// import { viewQuestion } from "@/lib/actions/interaction.action";
+import { viewQuestion } from "@/lib/actions/interaction.action";
 import { downvoteQuestion, upvoteQuestion } from "@/lib/actions/question.action";
 import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import { formatAndDivideNumber } from "@/lib/utils";
@@ -93,12 +93,12 @@ const Votes = ({
     }
   }
 
-  // useEffect(() => {
-  //   viewQuestion({
-  //     questionId: JSON.parse(itemId),
-  //     userId: userId ? JSON.parse(userId) : undefined,
-  //   })
-  // }, [itemId, userId, pathname, router]);
+  useEffect(() => {
+    viewQuestion({
+      questionId: JSON.parse(itemId),
+      userId: userId ? JSON.parse(userId) : undefined,
+    })
+  }, [itemId, userId, pathname, router]);
 
   return (
     <div className="flex gap-5">

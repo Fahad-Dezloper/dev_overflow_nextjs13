@@ -52,7 +52,7 @@ export async function POST(req: Request) {
  
   const eventType = evt.type;
 
-  console.log({eventType})
+  // console.log({eventType})
  
   if(eventType === 'user.created') {
     const { id, email_addresses, image_url, username, first_name, last_name } = evt.data;
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
           const email = email_addresses[0].email_address;
           const name = `${first_name || ''}${last_name ? ` ${last_name}` : ''}`;
 
-    console.log('userId:', evt.data.id)
+    // console.log('userId:', evt.data.id)
     // Create a new user in your database
     try {
           const mongoUser = await createUser({
@@ -109,6 +109,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: 'OK', user: deletedUser})
   }
  
-  return new Response('', { status: 201 })
+  return NextResponse.json({message: 'OK'})
 }
  

@@ -19,75 +19,70 @@ import { Input } from "@/components/ui/input"
 import { QuestionsSchema } from "@/lib/validations"
 import { Badge } from "../ui/badge";
 import Image from "next/image";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
 
-const type:any = 'create'
-
 interface Props {
+  type?: string;
   mongoUserId: string;
+  questionDetails?: string;
 }
 
-const Question = ({ mongoUserId }: Props) => {
+const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   const {mode} = useTheme()
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter();
   const pathname = usePathname();
+  const parsedQuestionDetails = questionDetails ? JSON.parse(questionDetails) : {};
+  // console.log(questionDetails);
+
+  const groupedTags = Array.isArray(parsedQuestionDetails.tags) 
+  ? parsedQuestionDetails.tags.map((tag: any) => tag.name)
+  : [];((tag: any) => tag.name)
     // 1. Define your form.
     const form = useForm<z.infer<typeof QuestionsSchema>>({
       resolver: zodResolver(QuestionsSchema),
       defaultValues: {
-          title: "",
-          explaination: "",
-          tags: []
+          title: parsedQuestionDetails.title || '',
+          explanation: parsedQuestionDetails.content || '',
+          tags: groupedTags || [],
       },
     })
-    
-    // 2. Define a submit handler.
-            // async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
-            //   setIsSubmitting(true);
-            //   try {
-            //     await createQuestion({
-            //       title: values.title,
-            //       content: values.explaination,
-            //       tags: values.tags,
-            //       author: JSON.parse(mongoUserId),
-            //       path: pathname,
-            //     });
 
-            //     router.push('/');
-            //   } catch (error) {
-                
-            //   } finally {
-            //     setIsSubmitting(false)
-            //   }
-            // }
-
-// copy code
-
-async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
-    // console.log("Form submitted with values:", values); // Check if this logs correctly
-
+  async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setIsSubmitting(true);
-
+    
     try {
+      if(type === 'Edit') {
+        await editQuestion({
+          questionId: parsedQuestionDetails._id,
+          title: values.title,
+          content: values.explanation,
+          path: pathname,
+        })
+        console.log(editQuestion)
+        router.push(`/question/${parsedQuestionDetails._id}`);
+      } else {
         await createQuestion({
-            title: values.title,
-            content: values.explaination,
-            tags: values.tags,
-            author: JSON.parse(mongoUserId),
-            path: pathname,
+          title: values.title,
+          content: values.explanation,
+          tags: values.tags,
+          author: JSON.parse(mongoUserId),
+          path: pathname,
         });
 
         router.push('/');
+      }
+
     } catch (error) {
-        console.error("Error submitting the form:", error); // Log errors if any
+      
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
     }
-}
+  }
+
   
 
     const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, field: any) => {
@@ -143,7 +138,7 @@ async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
               
               <FormField
           control={form.control}
-          name="explaination"
+          name="explanation"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">Detailed explaination of all your problem <span className="text-primary-500">*</span></FormLabel>
@@ -156,7 +151,7 @@ async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
                     }}
                     onBlur={field.onBlur}
                     onEditorChange={(content) => field.onChange(content)}
-                    initialValue=""
+                    initialValue={parsedQuestionDetails.content || ''}
                     init={{
                       height: 500,
                       menubar: false,
@@ -192,7 +187,7 @@ async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
               <FormLabel className="paragraph-semibold text-dark400_light800">Tags <span className="text-primary-500">*</span></FormLabel>
                   <FormControl className="mt-3.5">
                       <>
-                      <Input className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-light300_dark700 min-h-[56px] border"
+                      <Input disabled={type === 'Edit'} className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-light300_dark700 min-h-[56px] border"
                     placeholder="Add tags..."
                     onKeyDown={(e) => handleInputKeyDown(e, field)}  
                       />
@@ -200,15 +195,15 @@ async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
                       {field.value.length > 0 && (
                           <div className="flex-start mt-2.5 gap-2.5">
                       {field.value.map((tag: any) => (
-                                  <Badge key={tag} className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize" onClick={() => handleTagRemove(tag, field)}>
+                                  <Badge key={tag} className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize" onClick={() => type !== 'Edit' ? handleTagRemove(tag, field) : () => {}}>
                                       {tag}
-                                      <Image
-                                          src="/assets/icons/close.svg"
-                                          alt="Close icon"
-                                          width={12}
-                                          height={12}
-                                          className="cursor-pointer object-contain invert-0 dark:invert"
-                                      />
+                                      {type !== 'Edit' && (<Image
+                                        src="/assets/icons/close.svg"
+                                        alt="Close icon"
+                                        width={12}
+                                        height={12}
+                                        className="cursor-pointer object-contain invert-0 dark:invert"
+                                      />)}
                                   </Badge>
                               ))}
                         </div>
@@ -226,11 +221,11 @@ async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
         <Button type="submit" className="primary-gradient w-fit !text-light-900" disabled={isSubmitting}>
           {isSubmitting ? (
             <>
-              {type === 'edit' ? 'Editing...' : 'Posting...'}
+              {type === 'Edit' ? 'Editing...' : 'Posting...'}
             </>
           ) : (
               <>
-                {type === 'edit' ? 'Edit Question' : 'Ask a Question'}
+                {type === 'Edit' ? 'Edit Question' : 'Ask a Question'}
               </>
           )}
           {/* sucessfully done */}

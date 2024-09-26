@@ -5,14 +5,19 @@ import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { QuestionFilters } from "@/constants/filter";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from '@clerk/nextjs/server'
+import { SearchParamsProps } from "@/types";
+import Pagination from '@/components/shared/Pagination'
 
-export default async function Home() {
+export default async function Home({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
 
   if(!userId) return null;
 
   const result = await getSavedQuestions({
     clerkId: userId,
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -36,10 +41,10 @@ export default async function Home() {
 
       <div className="mt-10 flex w-full flex-col gap-6">
         {result.questions.length > 0 ?
-          result.questions.map((question) => (
+          result.questions.map((question: any) => (
             <QuestionCard 
               key={question._id}
-              _id={question._id}
+              id={question.id}
               title={question.title}
               tags={question.tags}
               author={question.author}
@@ -55,6 +60,14 @@ export default async function Home() {
             link="/ask-question"
             linkTitle="Ask a Question"
           />}
+      </div>
+
+      <div className="mt-10">
+        <Pagination 
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={true}
+          // result.isNext => Resolve this issue
+        />
       </div>
     </>
   )

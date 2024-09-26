@@ -8,17 +8,27 @@ import { SheetClose } from '../ui/sheet';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '../ui/button';
-import { SignedOut } from '@clerk/nextjs';
+import { SignedOut, useAuth } from '@clerk/nextjs';
 
 const LeftSidebar = () => {
+    const { userId } = useAuth()
     const pathname = usePathname();
 
     return (
-      <section className='background-light900_dark200 light-border sticky left-0 top-0 flex h-screen  flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[226px] custom-scrollbar'>
+      <section className='background-light900_dark200 light-border custom-scrollbar sticky left-0 top-0 flex  h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[226px]'>
           <div className='flex flex-1 flex-col gap-3'>
               {sidebarLinks.map((item, index) => {
                 // console.log(item)
                 const isActive = (pathname.includes(item.route) && item.route.length > 1) || pathname === item.route;
+
+                if (item.route === '/profile') {
+                  if (userId) {
+                    item.route = `${item.route}/${userId}`
+                  } else {
+                    return null
+                  }
+                }
+
                 return (
                     <Link
                         key={index}
@@ -50,7 +60,7 @@ const LeftSidebar = () => {
                         </Button>
                       </Link>
                       <Link href="/sign-up">
-                <Button className='small-medium light-border-2 btn-tertiary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none text-dark400_light900'>
+                <Button className='small-medium light-border-2 btn-tertiary text-dark400_light900 min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none'>
                   <Image
                     src="/assets/icons/sign-up.svg"
                     alt='login'
