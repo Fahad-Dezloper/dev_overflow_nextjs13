@@ -29,7 +29,7 @@ const UserSchema = new Schema({
     saved: [{ type: Schema.Types.ObjectId, ref: 'Question' }], // reference to saved questions
     joinedAt: { type: Date, default: Date.now } // assuming joinedAt is a Date, not a string
 });
-
+// consoel
 const User = models.User || model('User', UserSchema);
 
 export default User;
